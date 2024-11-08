@@ -11,11 +11,11 @@ export default function Login() {
             <div className="flex justify-between">
               <button className="flex gap-[10px] text-white items-center bg-[#1f2937] border-white py-[8px] px-[70px] rounded-lg hover:bg-[#374050] transition duration-100 ease-in-out">
                 <img src="/google.svg" className="h-[20px] w-[20px]" alt="" />
-                Sign in with Google
+                Log in with Google
               </button>
               <button className="flex gap-[10px] text-white items-center bg-[#1f2937] border-white py-[8px] px-[70px] rounded-lg hover:bg-[#374050] transition duration-100 ease-in-out">
                 <img src="/apple.svg" className="h-[20px] w-[20px]" alt="" />
-                Sign in with Apple
+                Log in with Apple
               </button>
             </div>
             <div className="flex items-center justify-between">
