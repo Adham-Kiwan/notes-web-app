@@ -126,6 +126,7 @@ function Signup() {
             {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
           <br />
+          <br />
           <button
             className="w-[100%] rounded-lg py-[8px] bg-blue-500"
             type="submit"

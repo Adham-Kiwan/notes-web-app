@@ -3,7 +3,6 @@ import useStore from './store';
 
 function Login() {
   const togglePage = useStore((state) => state.togglePage);
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -36,6 +35,7 @@ function Login() {
     setErrors({});
 
     try {
+      // Send POST request to login endpoint
       const response = await fetch("http://localhost:2000/user/login", {
         method: "POST",
         headers: {
@@ -47,7 +47,12 @@ function Login() {
       const data = await response.json();
       if (response.ok) {
         setMessage("Login successful!");
-        // You can redirect the user or handle the response as needed
+
+        // Store the token in localStorage or sessionStorage
+        localStorage.setItem("token", data.token); // Save token in localStorage
+
+        // Optionally, you can redirect the user or update the UI
+        // window.location.href = '/dashboard'; // Example redirect to dashboard
       } else {
         setMessage(data.error || "Login failed");
       }

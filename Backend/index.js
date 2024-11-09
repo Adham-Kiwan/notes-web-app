@@ -3,21 +3,21 @@ const app = express();
 const port = 2000;
 const cors = require("cors");
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
 const { PrismaClient } = require('@prisma/client');
+const jwt = require('jsonwebtoken');
 const prisma = new PrismaClient();
-
 
 app.use(express.json());
 app.use(cors({
   origin: "http://localhost:5173"
 }));
 
-
+// Basic route for testing
 app.post("/", (req, res) => {
   res.send("Hello World!");
 });
 
+// User registration route
 app.post('/user/create', async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -32,8 +32,7 @@ app.post('/user/create', async (req, res) => {
     }
 
     // Hash the password before saving it
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(password, 10); // 10 is the saltRounds value
 
     // Create the user with the hashed password
     const newUser = await prisma.user.create({
@@ -43,13 +42,54 @@ app.post('/user/create', async (req, res) => {
         password: hashedPassword,
       },
     });
-    newUser.password = '';
+    newUser.password = ''; // Don't return the password in the response
     res.json({ message: 'User created successfully', user: newUser });
   } catch (error) {
+    console.error('Error creating user:', error);
     res.status(500).json({ error: 'Error creating user' });
   }
 });
 
+// User login route
+app.post('/user/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Compare the provided password with the stored hashed password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Define your JWT secret key securely
+    const JWT_SECRET = process.env.JWT_SECRET;
+    
+    // Generate JWT token including user name
+    const token = jwt.sign(
+      { userId: user.id, userName: user.name }, // Add userName to token payload
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+    
+    // Return the token in the response
+    res.json({ message: 'Login successful', token });
+  } catch (error) {
+    console.error('Error logging in user:', error);
+    res.status(500).json({ error: 'Error logging in user' });
+  }
+});
+
+
+// Start the server
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Server is running on http://localhost:${port}`);
 });
