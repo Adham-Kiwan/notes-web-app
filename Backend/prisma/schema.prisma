@@ -8,7 +8,6 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// Example model for a "User" table
 model User {
   id       Int     @id @default(autoincrement())
   email    String  @unique
