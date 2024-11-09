@@ -1,4 +1,3 @@
-// Signup.js
 import React, { useState } from "react";
 import useStore from "./store";
 
@@ -10,6 +9,7 @@ function Signup() {
     password: "",
   });
   const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState({}); // Track validation errors
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -20,6 +20,21 @@ function Signup() {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate the form fields
+    const newErrors = {};
+    if (!formData.name) newErrors.name = "This field is required";
+    if (!formData.email) newErrors.email = "This field is required";
+    if (!formData.password) newErrors.password = "This field is required";
+
+    // If there are validation errors, set them and stop form submission
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // Clear errors if the form is valid
+    setErrors({});
 
     try {
       const response = await fetch("http://localhost:2000/user/create", {
@@ -50,57 +65,65 @@ function Signup() {
             <br />
           </div>
           <div className="flex justify-between">
-            <button className="flex gap-[10px] text-white items-center bg-[#1f2937] border-white py-[8px] px-[70px] rounded-lg hover:bg-[#374050] transition duration-100 ease-in-out">
+            <div className="cursor-pointer flex gap-[10px] text-white items-center bg-[#1f2937] border-white py-[8px] px-[70px] rounded-lg hover:bg-[#374050] transition duration-100 ease-in-out">
               <img src="/google.svg" className="h-[20px] w-[20px]" alt="" />
               Sign up with Google
-            </button>
-            <button className="flex gap-[10px] text-white items-center bg-[#1f2937] border-white py-[8px] px-[70px] rounded-lg hover:bg-[#374050] transition duration-100 ease-in-out">
+            </div>
+            <div className="cursor-pointer flex gap-[10px] text-white items-center bg-[#1f2937] border-white py-[8px] px-[70px] rounded-lg hover:bg-[#374050] transition duration-100 ease-in-out">
               <img src="/apple.svg" className="h-[20px] w-[20px]" alt="" />
               Sign up with Apple
-            </button>
+            </div>
           </div>
+          <br />
           <div className="flex items-center justify-between">
             <hr className="w-[40%] my-4 border-[#7a8595]" />
             <p className="text-[#7a8595] text-1xl">or</p>
             <hr className="w-[40%] my-4 border-[#7a8595]" />
           </div>
+
           <div className="flex flex-col gap-[5px]">
             <label htmlFor="name">Name</label>
             <input
-              className="bg-[#374050] rounded-lg px-[20px] py-[8px] text-white"
+              className={`bg-[#374050] rounded-lg px-[20px] py-[8px] text-white ${
+                errors.name ? "border-2 border-red-500" : ""
+              }`}
               id="name"
               type="text"
               placeholder="Enter your name"
               value={formData.name}
               onChange={handleChange}
-              required
             />
+            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
           </div>
           <br />
           <div className="flex flex-col gap-[5px]">
             <label htmlFor="email">Email</label>
             <input
-              className="bg-[#374050] rounded-lg px-[20px] py-[8px] text-white"
+              className={`bg-[#374050] rounded-lg px-[20px] py-[8px] text-white ${
+                errors.email ? "border-2 border-red-500" : ""
+              }`}
               id="email"
               type="text"
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
-              required
             />
+            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
           <br />
           <div className="flex flex-col gap-[5px]">
             <label htmlFor="password">Password</label>
             <input
-              className="bg-[#374050] rounded-lg px-[20px] py-[8px] text-white"
+              className={`bg-[#374050] rounded-lg px-[20px] py-[8px] text-white ${
+                errors.password ? "border-2 border-red-500" : ""
+              }`}
               id="password"
               type="password"
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
-              required
             />
+            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
           <br />
           <button
@@ -126,10 +149,9 @@ function Signup() {
       <div className="flex flex-col justify-center gap-[20px] w-[50%] h-[100vh] bg-[#2563eb] px-[50px] py-[100px]">
         <div className="flex gap-[10px]">
           <img src="/intro logo.svg" alt="" />
-
           <h2 className="text-white font-bold text-3xl">NoteNest</h2>
         </div>
-        <h1 className="text-white font-bold text-5xl ">
+        <h1 className="text-white font-bold text-5xl">
           Your space to capture, organize, and prioritize notes with ease.
         </h1>
         <p className="text-white opacity-80">

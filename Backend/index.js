@@ -17,6 +17,7 @@ app.use(cors({
 app.post("/", (req, res) => {
   res.send("Hello World!");
 });
+
 app.post('/user/create', async (req, res) => {
   const { name, email, password } = req.body;
 
