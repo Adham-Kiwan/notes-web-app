@@ -1,12 +1,17 @@
-import Login from './Login'
-import Signup from './Signup'
+// App.js
+import React from 'react';
+import Login from './Login';
+import Signup from './Signup';
+import useStore from './store';
+
 function App() {
+  const { isLogin } = useStore();
 
   return (
     <>
-      <Signup />
+      {isLogin ? <Login /> : <Signup />}
     </>
-  )
+  );
 }
 
-export default App
+export default App;

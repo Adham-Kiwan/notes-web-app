@@ -1,4 +1,9 @@
-export default function Login() {
+import React from "react";
+import useStore from './store';
+
+function Login() {
+  const togglePage = useStore((state) => state.togglePage);
+
   return (
     <>
       <div className="flex">
@@ -67,8 +72,11 @@ export default function Login() {
               Log in
             </button>
             <div>
-                <br />
-                <p>Don't have an account? <span className="text-blue-500 cursor-pointer">Sign up</span></p>
+              <br />
+              <p>
+                Don't have an account?{" "}
+                <span className="text-blue-500 cursor-pointer" onClick={togglePage}>Sign up</span>
+              </p>
             </div>
           </form>
         </div>
@@ -140,3 +148,5 @@ export default function Login() {
     </>
   );
 }
+
+export default Login;
