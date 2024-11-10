@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Switch } from "@nextui-org/switch";
 import { MoonIcon } from "./MoonIcon";
 import { SunIcon } from "./SunIcon";
 import AddNote from "./AddNote";
-import useStore from "./store"; // Import the store
+import useStore from "./store";
 
 function MainPage() {
   const { isAddNoteVisible, toggleAddNote } = useStore();
+  const [userName, setUserName] = useState("");
+
+  // Load the user name from local storage when the component mounts
+  useEffect(() => {
+    const storedName = localStorage.getItem("name");
+    if (storedName) {
+      setUserName(storedName);
+    }
+  }, []);
+
+  // Function to handle logout
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Remove token from local storage
+    localStorage.removeItem("name"); // Remove name from local storage
+    window.location.reload(); // Optionally reload to redirect to login page
+  };
 
   return (
     <div className="py-[70px] px-[150px] flex flex-col gap-[50px] items-center">
@@ -15,7 +31,7 @@ function MainPage() {
         <div className="flex w-[100%] justify-between px-[50px] py-[20px] rounded-[20px] bg-[#ffffff] items-center">
           <div className="flex items-center gap-[20px]">
             <img src="/avatar.png" alt="" />
-            <h2 className="text-2xl font-bold">Adham</h2>
+            <h2 className="text-2xl font-bold">{userName}</h2> {/* Display user name */}
           </div>
           <div className="flex items-center gap-[20px]">
             <input
@@ -33,9 +49,15 @@ function MainPage() {
             />
             <button
               className="p-[10px] rounded-[10px] bg-[#2563EB] flex justify-center items-center"
-              onClick={toggleAddNote} // Toggle AddNote modal visibility
+              onClick={toggleAddNote}
             >
               <img src="/plus.png" alt="" />
+            </button>
+            <button
+              className="p-[10px] rounded-[10px] bg-[#FF0000] text-white"
+              onClick={handleLogout}
+            >
+              Log Out
             </button>
           </div>
         </div>

@@ -24,9 +24,8 @@ function AddNote() {
         </div>
         <hr className="border-black" />
         <div className="flex flex-col gap-[10px]">
-          <input
-            className="placeholder-gray-400 focus:outline-none px-[0px] pt-[30px] pb-[200px]"
-            type="text"
+          <textarea
+            className="resize-none placeholder-gray-400 focus:outline-none px-[0px] pt-[30px] pb-[200px]"
             placeholder="Note..."
           />
           <div className="flex justify-end">

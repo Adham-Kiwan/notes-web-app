@@ -1,53 +1,49 @@
+// Signup.js
 import React, { useState } from "react";
 import useStore from "./store";
 
 function Signup() {
   const togglePage = useStore((state) => state.togglePage);
+  const setSignedUp = useStore((state) => state.setSignedUp);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
   const [message, setMessage] = useState("");
-  const [errors, setErrors] = useState({}); // Track validation errors
+  const [errors, setErrors] = useState({});
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [id]: value }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate the form fields
     const newErrors = {};
     if (!formData.name) newErrors.name = "This field is required";
     if (!formData.email) newErrors.email = "This field is required";
     if (!formData.password) newErrors.password = "This field is required";
 
-    // If there are validation errors, set them and stop form submission
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    // Clear errors if the form is valid
     setErrors({});
 
     try {
       const response = await fetch("http://localhost:2000/user/create", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       const data = await response.json();
       if (response.ok) {
         setMessage("User created successfully!");
+        setSignedUp(); // Redirect to login page after signup
       } else {
         setMessage(data.error || "Failed to create user");
       }

@@ -2,20 +2,18 @@
 import React from 'react';
 import Login from './Login';
 import Signup from './Signup';
-import useStore from './store';
 import MainPage from './MainPage';
-import './App.css'; // Import your CSS file here
-
+import useStore from './store';
+import './App.css';
 
 function App() {
-  const { isLogin } = useStore();
+  const { isLogin, isLoggedIn } = useStore();
 
-  return (
-    <>
-      {/* {isLogin ? <Login /> : <Signup />} */}
-      <MainPage />
-    </>
-  );
+  if (isLoggedIn) {
+    return <MainPage />;
+  }
+
+  return isLogin ? <Login /> : <Signup />;
 }
 
 export default App;

@@ -3,56 +3,46 @@ import useStore from './store';
 
 function Login() {
   const togglePage = useStore((state) => state.togglePage);
+  const setLoggedIn = useStore((state) => state.setLoggedIn);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const [errors, setErrors] = useState({}); // Track validation errors
+  const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [id]: value }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate the form fields
     const newErrors = {};
     if (!formData.email) newErrors.email = "This field is required";
     if (!formData.password) newErrors.password = "This field is required";
 
-    // If there are validation errors, set them and stop form submission
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    // Clear errors if the form is valid
     setErrors({});
 
     try {
-      // Send POST request to login endpoint
       const response = await fetch("http://localhost:2000/user/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       const data = await response.json();
       if (response.ok) {
         setMessage("Login successful!");
-
-        // Store the token in localStorage or sessionStorage
-        localStorage.setItem("token", data.token); // Save token in localStorage
-
-        // Optionally, you can redirect the user or update the UI
-        // window.location.href = '/dashboard'; // Example redirect to dashboard
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("name", data.name); // Store user name
+        setLoggedIn(); // Redirect to main page after login
       } else {
         setMessage(data.error || "Login failed");
       }
