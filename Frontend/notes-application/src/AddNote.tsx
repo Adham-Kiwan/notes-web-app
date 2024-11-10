@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import useStore from "./store"; // Import the store
 
-function AddNote() {
+interface AddNoteProps {
+  onNoteCreated: () => void; // This is the prop to notify MainPage to refetch notes
+}
+
+function AddNote({ onNoteCreated }: AddNoteProps) {
   const { toggleAddNote } = useStore();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -30,6 +34,7 @@ function AddNote() {
       if (response.ok) {
         setMessage("Note created successfully!");
         toggleAddNote(); // Close the modal after success
+        onNoteCreated(); // Call onNoteCreated to refetch the notes
       } else {
         setMessage(data.error || "Failed to create note.");
       }

@@ -120,6 +120,33 @@ app.post('/note/create', async (req, res) => {
 });
 
 
+// Endpoint to get notes for the logged-in user
+app.get('/notes', async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
+  if (!token) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
+
+  try {
+    // Verify the JWT token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Fetch the notes for the user
+    const notes = await prisma.note.findMany({
+      where: {
+        userId: decoded.userId, // Use the userId from the decoded token
+      },
+    });
+
+    console.log("Fetched notes for userId:", decoded.userId, notes); // Debug log
+
+    res.json({ notes }); // Return notes in the response
+  } catch (error) {
+    console.error("Error fetching notes:", error);
+    res.status(500).json({ error: 'Error fetching notes' });
+  }
+});
+
 
 // Start the server
 app.listen(port, () => {
