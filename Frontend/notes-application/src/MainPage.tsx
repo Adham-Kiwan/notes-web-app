@@ -18,47 +18,9 @@ function MainPage() {
       setUserName(storedName);
     }
 
-    const fetchNotes = async () => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        try {
-          const response = await fetch("http://localhost:2000/notes", {
-            method: "GET",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-            },
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            console.log("Fetched notes:", data); // Log the response
-
-            if (data && Array.isArray(data.notes)) {
-              setNotes(data.notes); // Safely set notes if the response is valid
-            } else {
-              console.error("Response doesn't contain notes");
-              setNotes([]); // Set to empty array in case of error
-            }
-          } else {
-            console.error("Failed to fetch notes:", response.statusText);
-            setNotes([]); // Set to empty array if request fails
-          }
-        } catch (error) {
-          console.error("Error fetching notes:", error);
-          setNotes([]); // Set to empty array in case of network or other errors
-        }
-      }
-    };
-
-    fetchNotes();
+    // Fetch notes when the component mounts
+    handleFetchNotes();
   }, []); // Empty dependency array ensures this runs once when component mounts
-
-  // Function to handle logout
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // Remove token from local storage
-    localStorage.removeItem("name"); // Remove name from local storage
-    window.location.reload(); // Optionally reload to redirect to login page
-  };
 
   // Function to fetch notes
   const handleFetchNotes = async () => {
@@ -80,6 +42,36 @@ function MainPage() {
         }
       } catch (error) {
         console.error("Error fetching notes:", error);
+      }
+    }
+  };
+
+  // Function to handle logout
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Remove token from local storage
+    localStorage.removeItem("name"); // Remove name from local storage
+    window.location.reload(); // Optionally reload to redirect to login page
+  };
+
+  // Function to handle delete note
+  const handleDeleteNote = async (noteId: number) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const response = await fetch(`http://localhost:2000/notes/${noteId}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          setNotes((prevNotes) => prevNotes.filter((note) => note.id !== noteId)); // Remove the deleted note from the state
+        } else {
+          console.error("Failed to delete note:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error deleting note:", error);
       }
     }
   };
@@ -130,7 +122,7 @@ function MainPage() {
       <div className={`w-[100%] flex flex-col items-center ${isAddNoteVisible ? "blur-md opacity-20" : ""}`}>
         {notes.length > 0 ? (
           notes.map((note) => (
-            <Note key={note.id} note={note} />
+            <Note key={note.id} note={note} onDelete={handleDeleteNote} /> // Pass the handleDeleteNote function as a prop
           ))
         ) : (
           <p>No notes available</p>
