@@ -193,7 +193,6 @@ app.delete('/notes/:id', async (req, res) => {
 });
 
 // Edit note route
-// Edit note route
 app.put('/notes/:id', async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1]; // Extract token from "Bearer <token>"
 
@@ -242,6 +241,122 @@ app.put('/notes/:id', async (req, res) => {
   } catch (error) {
     console.error('Error updating note:', error);
     res.status(500).json({ error: 'Error updating note' });
+  }
+});
+
+// Endpoint to generate a shareable link for a single note
+app.get('/notes/:id/share', async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
+
+  if (!token) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+
+  try {
+    // Verify the JWT token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const noteId = parseInt(req.params.id);
+
+    if (isNaN(noteId)) {
+      return res.status(400).json({ error: 'Invalid note ID' });
+    }
+
+    // Find the note to check if it belongs to the user
+    const note = await prisma.note.findUnique({
+      where: { id: noteId },
+      select: { userId: true }, // Only retrieve userId for authorization check
+    });
+
+    if (!note) {
+      return res.status(404).json({ error: 'Note not found' });
+    }
+
+    // Check if the note belongs to the current user
+    if (note.userId !== decoded.userId) {
+      return res.status(403).json({ error: 'You do not have permission to share this note' });
+    }
+
+    // Generate a unique, signed token for the shareable link
+    const shareToken = jwt.sign(
+      { noteId: noteId },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' } // Set an expiration time for the shareable link
+    );
+
+    // Create the shareable URL
+    const shareableUrl = `http://localhost:${port}/notes/shared/${noteId}?token=${shareToken}`;
+    
+    res.json({ message: 'Shareable link generated successfully', url: shareableUrl });
+  } catch (error) {
+    console.error("Error generating shareable link:", error);
+    res.status(500).json({ error: 'Error generating shareable link' });
+  }
+});
+
+app.get('/notes/shared/:id', async (req, res) => {
+  const { token } = req.query; 
+
+  if (!token) {
+    return res.status(401).send('Token is required');
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const noteId = parseInt(req.params.id);
+
+    if (isNaN(noteId)) {
+      return res.status(400).send('Invalid note ID');
+    }
+
+    if (decoded.noteId !== noteId) {
+      return res.status(403).send('Invalid token for this note');
+    }
+
+    const note = await prisma.note.findUnique({
+      where: { id: noteId },
+      select: { title: true, content: true },
+    });
+
+    if (!note) {
+      return res.status(404).send('Note not found');
+    }
+
+    res.send(`
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Shared Note</title>
+        <style>
+          body { font-family: Arial, sans-serif; color: #333; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f5f5f5; }
+          .note-container { background-color: #2563eb; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); max-width: 600px; width: 100%; }
+          .note-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: #ffffff; }
+          .note-content { font-size: 18px; line-height: 1.6; }
+          .all {
+          height: 100%;
+          width: 100%;
+          background-color: #101927;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          }
+        </style>
+      </head>
+      <body>
+      <div class="all">
+        <div class="note-container">
+          <div class="note-title">${note.title}</div>
+          <div class="note-content">${note.content}</div>
+        </div>
+        </div>
+      </body>
+      </html>
+    `);
+  } catch (error) {
+    console.error("Error accessing shared note:", error);
+    res.status(500).send('Error accessing shared note');
   }
 });
 
