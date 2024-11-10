@@ -114,7 +114,7 @@ function MainPage() {
               <img src="/plus.png" alt="" />
             </button>
             <button
-              className="p-[10px] rounded-[10px] bg-[#FF0000] text-white"
+              className="p-[8px] rounded-[10px] bg-[#ff3737] text-white"
               onClick={handleLogout}
             >
               Log Out
@@ -127,7 +127,7 @@ function MainPage() {
       {isAddNoteVisible && <AddNote onNoteCreated={handleFetchNotes} />}
 
       {/* Display the notes for the logged-in user */}
-      <div className={`w-[100%] ${isAddNoteVisible ? "blur-md opacity-20" : ""}`}>
+      <div className={`w-[100%] flex flex-col items-center ${isAddNoteVisible ? "blur-md opacity-20" : ""}`}>
         {notes.length > 0 ? (
           notes.map((note) => (
             <Note key={note.id} note={note} />
