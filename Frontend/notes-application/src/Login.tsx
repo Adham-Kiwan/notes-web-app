@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import useStore from './store';
+import useStore from "./store";
 
 function Login() {
   const togglePage = useStore((state) => state.togglePage);
@@ -87,7 +87,9 @@ function Login() {
               value={formData.email}
               onChange={handleChange}
             />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email}</p>
+            )}
           </div>
           <br />
           <div className="flex flex-col gap-[5px]">
@@ -102,7 +104,9 @@ function Login() {
               value={formData.password}
               onChange={handleChange}
             />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password}</p>
+            )}
           </div>
           <br />
           <div className="flex justify-between">
@@ -125,14 +129,24 @@ function Login() {
             </div>
           </div>
           <br />
-          <button className="w-[100%] rounded-lg py-[8px] bg-blue-500" type="submit">
+          <button
+            className="w-[100%] rounded-lg py-[8px] bg-blue-500"
+            type="submit"
+          >
             Log in
           </button>
+          {/* Display error message if login failed */}
+          {message && <p className="text-red-500 text-sm mt-2">{message}</p>}
           <div>
             <br />
             <p>
               Don't have an account?{" "}
-              <span className="text-blue-500 cursor-pointer" onClick={togglePage}>Sign up</span>
+              <span
+                className="text-blue-500 cursor-pointer"
+                onClick={togglePage}
+              >
+                Sign up
+              </span>
             </p>
           </div>
         </form>
