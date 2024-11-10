@@ -136,7 +136,7 @@ function Login() {
             Log in
           </button>
           {/* Display error message if login failed */}
-          {message && <p className="text-red-500 text-sm mt-2">{message}</p>}
+          {message && <p className="text-red-500 text-sm mt-2">Invalid credentials!</p>}
           <div>
             <br />
             <p>

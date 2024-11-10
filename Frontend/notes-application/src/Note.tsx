@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 interface NoteProps {
   note: {
@@ -6,13 +6,18 @@ interface NoteProps {
     title: string;
     content: string;
   };
-  onDelete: (noteId: number) => void; // Prop to handle deleting a note
+  onDelete: (noteId: number) => void;
+  onEdit: (note: { id: number; title: string; content: string }) => void; // New prop for handling note edit
 }
 
-function Note({ note, onDelete }: NoteProps) {
+function Note({ note, onDelete, onEdit }: NoteProps) {
   // Function to handle the deletion when the trash icon is clicked
   const handleDeleteClick = () => {
-    onDelete(note.id); // Call the onDelete function with the note id
+    onDelete(note.id);
+  };
+
+  const handleEditClick = () => {
+    onEdit(note); // Trigger edit when the edit icon is clicked
   };
 
   return (
@@ -21,13 +26,17 @@ function Note({ note, onDelete }: NoteProps) {
         <h3 className="font-semibold text-2xl">{note.title}</h3>
         <div className="flex items-center gap-[20px]">
           <img className="cursor-pointer" src="/share.png" alt="" />
-          <img className="cursor-pointer" src="/edit.png" alt="" />
-          {/* Trash icon for deleting the note */}
+          <img
+            className="cursor-pointer"
+            src="/edit.png"
+            alt="Edit"
+            onClick={handleEditClick} // Open the edit form
+          />
           <img
             className="cursor-pointer"
             src="/trash.png"
             alt="Delete"
-            onClick={handleDeleteClick} // Call handleDeleteClick when clicked
+            onClick={handleDeleteClick} // Delete the note
           />
         </div>
       </div>
