@@ -6,6 +6,7 @@ import AddNote from "./AddNote";
 import useStore from "./store";
 import Note from "./Note"; // Assuming you have a Note component
 import ConfirmDelete from "./ConfirmDelete"; // Import the ConfirmDelete component
+import { div } from "framer-motion/client";
 
 function MainPage() {
   const { isAddNoteVisible, toggleAddNote } = useStore();
@@ -18,15 +19,13 @@ function MainPage() {
   ); // State for note title
   const [isEditingNote, setIsEditingNote] = useState(false); // Track if editing is in progress
   const [noteToEdit, setNoteToEdit] = useState<any>(null); // Store note being edited
+  const [isDarkTheme, setIsDarkTheme] = useState(false); // Track theme state
 
-  // Load the user name from local storage when the component mounts
   useEffect(() => {
     const storedName = localStorage.getItem("name");
     if (storedName) {
       setUserName(storedName);
     }
-
-    // Fetch notes when the component mounts
     handleFetchNotes();
   }, []); // Empty dependency array ensures this runs once when component mounts
 
@@ -54,14 +53,12 @@ function MainPage() {
     }
   };
 
-  // Function to handle logout
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Remove token from local storage
-    localStorage.removeItem("name"); // Remove name from local storage
-    window.location.reload(); // Optionally reload to redirect to login page
+    localStorage.removeItem("token");
+    localStorage.removeItem("name");
+    window.location.reload();
   };
 
-  // Function to handle delete note
   const handleDeleteNote = async () => {
     if (noteToDelete !== null && noteTitleToDelete) {
       const token = localStorage.getItem("token");
@@ -80,10 +77,10 @@ function MainPage() {
           if (response.ok) {
             setNotes((prevNotes) =>
               prevNotes.filter((note) => note.id !== noteToDelete)
-            ); // Remove the deleted note from the state
-            setIsConfirmingDelete(false); // Close the confirmation panel
-            setNoteToDelete(null); // Reset the note to delete
-            setNoteTitleToDelete(null); // Reset the note title to delete
+            );
+            setIsConfirmingDelete(false);
+            setNoteToDelete(null);
+            setNoteTitleToDelete(null);
           } else {
             console.error("Failed to delete note:", response.statusText);
           }
@@ -94,20 +91,17 @@ function MainPage() {
     }
   };
 
-  // Function to handle canceling the delete action
   const handleCancelDelete = () => {
-    setIsConfirmingDelete(false); // Close the confirmation panel
-    setNoteToDelete(null); // Reset the note to delete
-    setNoteTitleToDelete(null); // Reset the note title to delete
+    setIsConfirmingDelete(false);
+    setNoteToDelete(null);
+    setNoteTitleToDelete(null);
   };
 
-  // Function to handle editing a note
   const handleEditNote = (note: any) => {
-    setNoteToEdit(note); // Set the note to edit
-    setIsEditingNote(true); // Set editing state to true
+    setNoteToEdit(note);
+    setIsEditingNote(true);
   };
 
-  // Function to save the edited note
   const handleSaveEdit = async () => {
     if (noteToEdit) {
       const token = localStorage.getItem("token");
@@ -129,10 +123,9 @@ function MainPage() {
           );
 
           if (response.ok) {
-            // Refresh the notes after editing
-          await handleFetchNotes();
-            setIsEditingNote(false); // Close edit mode
-            setNoteToEdit(null); // Reset the note being edited
+            await handleFetchNotes();
+            setIsEditingNote(false);
+            setNoteToEdit(null);
           }
         } catch (error) {
           console.error("Error updating note:", error);
@@ -141,25 +134,34 @@ function MainPage() {
     }
   };
 
-  // Function to cancel editing
   const handleCancelEdit = () => {
-    setIsEditingNote(false); // Close edit mode
-    setNoteToEdit(null); // Reset the note being edited
+    setIsEditingNote(false);
+    setNoteToEdit(null);
+  };
+
+  // Toggle theme state
+  const handleThemeToggle = () => {
+    setIsDarkTheme((prevTheme) => !prevTheme);
   };
 
   return (
-    <div className="py-[70px] px-[150px] flex flex-col gap-[50px] items-center">
+    <div
+      className={`h-[100vh] py-[70px] px-[150px] flex flex-col gap-[50px] items-center ${
+        isDarkTheme ? "bg-gray-100" : "bg-[#101927]"
+      }`}
+    >
       {/* Header */}
       <div
-        className={`w-[100%] ${isAddNoteVisible ? "blur-md opacity-20" : ""} ${
-          isConfirmingDelete ? "blur-md opacity-20" : ""
-        } ${isEditingNote ? "blur-md opacity-20" : ""}`}
+        className={`w-[100%] rounded-[20px] ${
+          isAddNoteVisible ? "blur-md opacity-20" : ""
+        } ${isConfirmingDelete ? "blur-md opacity-20" : ""} ${
+          isEditingNote ? "blur-md opacity-20" : ""
+        } ${isDarkTheme ? "bg-[#101927] text-white" : "bg-white"}`}
       >
-        <div className="flex w-[100%] justify-between px-[50px] py-[20px] rounded-[20px] bg-[#ffffff] items-center">
+        <div className="flex w-[100%] justify-between px-[50px] py-[20px] rounded-[20px] items-center">
           <div className="flex items-center gap-[20px]">
             <img src="/avatar.png" alt="" />
-            <h2 className="text-2xl font-bold">{userName}</h2>{" "}
-            {/* Display user name */}
+            <h2 className="text-2xl font-bold">{userName}</h2>
           </div>
           <div className="flex items-center gap-[20px]">
             <input
@@ -174,6 +176,8 @@ function MainPage() {
               color="success"
               startContent={<SunIcon />}
               endContent={<MoonIcon />}
+              checked={isDarkTheme}
+              onChange={handleThemeToggle}
             />
             <button
               className="p-[10px] rounded-[10px] bg-[#2563EB] flex justify-center items-center"
@@ -230,39 +234,41 @@ function MainPage() {
 
       {/* Edit Note Modal */}
       {isEditingNote && noteToEdit && (
-        <div className="fixed w-[500px] flex flex-col items-center gap-[10px] bg-white p-[30px] rounded-lg">
-          <h1>Edit Note</h1>
-          <hr className="border-black w-full" />
-          <input
-            className="w-full focus:outline-none placeholder-gray-400"
-            type="text"
-            value={noteToEdit.title}
-            onChange={(e) =>
-              setNoteToEdit({ ...noteToEdit, title: e.target.value })
-            }
-            placeholder="Title"
-          />
-          <textarea
-            className="w-full focus:outline-none resize-none placeholder-gray-400 px-[0px] pt-[30px] pb-[200px]"
-            value={noteToEdit.content}
-            onChange={(e) =>
-              setNoteToEdit({ ...noteToEdit, content: e.target.value })
-            }
-            placeholder="Content"
-          ></textarea>
-          <div className="flex justify-between w-full">
-            <button
-              className="bg-[#2563EB] p-[10px] rounded-lg"
-              onClick={handleSaveEdit}
-            >
-              Save
-            </button>
-            <button
-              className="bg-gray-400 p-[10px] rounded-lg"
-              onClick={handleCancelEdit}
-            >
-              Cancel
-            </button>
+        <div className="fixed flex inset-0 flex-col items-center gap-[10px] bg-black bg-opacity-50">
+          <div className="flex flex-col items-center mt-[150px] w-[500px] bg-white p-[30px] rounded-[20px]">
+            <h1 className="pb-[20px] text-2xl">Edit Note</h1>
+            <hr className="border-black w-full" />
+            <input
+              className="w-full focus:outline-none placeholder-gray-400"
+              type="text"
+              value={noteToEdit.title}
+              onChange={(e) =>
+                setNoteToEdit({ ...noteToEdit, title: e.target.value })
+              }
+              placeholder="Title"
+            />
+            <textarea
+              className="w-full focus:outline-none resize-none placeholder-gray-400 px-[0px] pt-[30px] pb-[200px]"
+              value={noteToEdit.content}
+              onChange={(e) =>
+                setNoteToEdit({ ...noteToEdit, content: e.target.value })
+              }
+              placeholder="Content"
+            ></textarea>
+            <div className="flex justify-between w-full">
+              <button
+                className="bg-[#2563EB] p-[10px] rounded-lg"
+                onClick={handleSaveEdit}
+              >
+                Save
+              </button>
+              <button
+                className="bg-gray-400 p-[10px] rounded-lg"
+                onClick={handleCancelEdit}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}

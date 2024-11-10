@@ -44,7 +44,7 @@ function AddNote({ onNoteCreated }: AddNoteProps) {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center z-20">
+    <div className="fixed inset-0 flex justify-center items-center z-20 bg-black bg-opacity-50">
       <div className="flex flex-col w-[500px] rounded-[20px] p-[20px] bg-[#ffffff]">
         <div className="flex justify-between">
           <input

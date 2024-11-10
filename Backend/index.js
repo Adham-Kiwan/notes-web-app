@@ -361,6 +361,27 @@ app.get('/notes/shared/:id', async (req, res) => {
 });
 
 
+// Endpoint to search notes for the logged-in user
+app.get('/notes/search', async (req, res) => {
+  const { userId } = req.user;
+  const { query } = req.query; // Get the search term from query parameters
+
+  try {
+      const notes = await prisma.note.findMany({
+          where: {
+              userId: userId,
+              OR: [
+                  { title: { contains: query, mode: 'insensitive' } },
+                  { content: { contains: query, mode: 'insensitive' } }
+              ]
+          }
+      });
+      res.json({ success: true, notes });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+});
+
 
 
 
