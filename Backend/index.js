@@ -89,6 +89,38 @@ app.post('/user/login', async (req, res) => {
 });
 
 
+// Note creation route
+app.post('/note/create', async (req, res) => {
+  const { title, content } = req.body;
+  const token = req.headers.authorization?.split(" ")[1]; // Extract token from "Bearer <token>"
+
+  if (!token) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+
+  try {
+    // Verify the token
+    const JWT_SECRET = process.env.JWT_SECRET;
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    // Create the note associated with the user
+    const newNote = await prisma.note.create({
+      data: {
+        title,
+        content, // Use "content" field as defined in your schema
+        userId: decoded.userId, // Link note to the user
+      },
+    });
+
+    res.json({ message: 'Note created successfully', note: newNote });
+  } catch (error) {
+    console.error('Error creating note:', error);
+    res.status(500).json({ error: 'Error creating note' });
+  }
+});
+
+
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
