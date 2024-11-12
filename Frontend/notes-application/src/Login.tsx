@@ -152,7 +152,7 @@ function Login() {
         </form>
       </div>
       <div className="flex flex-col justify-center items-center gap-4 lg:gap-[20px] w-full lg:w-[50%] h-[100vh] bg-[#2563eb] p-4 lg:px-[50px] lg:py-[100px]">
-        <div className="flex gap-[10px] w-full">
+        <div className="flex gap-[10px] justify-center w-full">
           <img src="/intro logo.svg" alt="" />
           <h2 className="text-white font-bold text-2xl lg:text-3xl">
             NoteNest

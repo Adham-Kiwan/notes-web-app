@@ -146,55 +146,56 @@ function MainPage() {
 
   return (
     <div
-      className={`h-[100vh] py-[70px] px-[150px] flex flex-col gap-[50px] items-center ${
+      className={`h-[100vh] lg:py-[70px] lg:px-[150px] xs:py-[20px] xs:px-[20px] flex flex-col gap-[50px] items-center ${
         isDarkTheme ? "bg-gray-100" : "bg-[#101927]"
       }`}
     >
       {/* Header */}
       <div
-  className={`w-full rounded-[20px] ${
-    isAddNoteVisible || isConfirmingDelete || isEditingNote ? "blur-md opacity-20" : ""
-  } ${isDarkTheme ? "bg-[#101927] text-white" : "bg-white"}`}
->
-  <div className="flex flex-col md:flex-row w-full justify-between p-[20px] md:px-[50px] md:py-[20px] rounded-[20px] items-center gap-4">
-    <div className="flex items-center gap-[10px] md:gap-[20px]">
-      <img src="/avatar.png" alt="" className="w-[40px] h-[40px]" />
-      <h2 className="text-xl md:text-2xl font-bold">{userName}</h2>
-    </div>
-    
-    <div className="flex items-center w-full md:w-auto gap-[10px] md:gap-[20px]">
-      <input
-        className="w-full md:w-auto focus:outline-none bg-[#E2E7E8] rounded-[10px] px-[10px] md:px-[40px] py-[8px] md:py-[10px] text-black"
-        placeholder="Search..."
-        type="text"
-      />
-    </div>
-    
-    <div className="flex items-center gap-[10px] md:gap-[20px]">
-      <Switch
-        size="md"
-        color="success"
-        startContent={<SunIcon />}
-        endContent={<MoonIcon />}
-        checked={isDarkTheme}
-        onChange={handleThemeToggle}
-      />
-      <button
-        className="p-[8px] rounded-[10px] bg-[#2563EB] flex justify-center items-center w-[40px] h-[40px]"
-        onClick={toggleAddNote}
+        className={`w-full rounded-[20px] ${
+          isAddNoteVisible || isConfirmingDelete || isEditingNote
+            ? "blur-md opacity-20"
+            : ""
+        } ${isDarkTheme ? "bg-[#101927] text-white" : "bg-white"}`}
       >
-        <img src="/plus.png" alt="" className="w-[20px] h-[20px]" />
-      </button>
-      <button
-        className="xl:p-[8px] rounded-[10px] bg-[#ff3737] text-white text-sm sm:text-base md:p-[6px]"
-        onClick={handleLogout}
-      >
-        Log Out
-      </button>
-    </div>
-  </div>
-</div>
+        <div className="flex flex-col md:flex-row w-full justify-between p-[20px] md:px-[50px] md:py-[20px] rounded-[20px] items-center gap-4">
+          <div className="flex items-center gap-[10px] md:gap-[20px]">
+            <img src="/avatar.png" alt="" className="w-[40px] h-[40px]" />
+            <h2 className="text-xl md:text-2xl font-bold">{userName}</h2>
+          </div>
 
+          <div className="flex items-center w-full md:w-auto gap-[10px] md:gap-[20px]">
+            <input
+              className="w-full md:w-auto focus:outline-none bg-[#E2E7E8] rounded-[10px] px-[10px] md:px-[40px] py-[8px] md:py-[10px] text-black"
+              placeholder="Search..."
+              type="text"
+            />
+          </div>
+
+          <div className="flex items-center gap-[10px] md:gap-[20px]">
+            <Switch
+              size="md"
+              color="success"
+              startContent={<SunIcon />}
+              endContent={<MoonIcon />}
+              checked={isDarkTheme}
+              onChange={handleThemeToggle}
+            />
+            <button
+              className="p-[8px] rounded-[10px] bg-[#2563EB] flex justify-center items-center w-[40px] h-[40px]"
+              onClick={toggleAddNote}
+            >
+              <img src="/plus.png" alt="" className="w-[20px] h-[20px]" />
+            </button>
+            <button
+              className="xl:p-[8px] rounded-[10px] bg-[#ff3737] text-white text-sm sm:text-base md:p-[6px]"
+              onClick={handleLogout}
+            >
+              Log Out
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Show AddNote modal if isAddNoteVisible is true */}
       {isAddNoteVisible && <AddNote onNoteCreated={handleFetchNotes} />}
@@ -221,7 +222,9 @@ function MainPage() {
             />
           ))
         ) : (
-          <p className={`${isDarkTheme ? "text-black" : "text-white"}`}>No notes available</p>
+          <p className={`${isDarkTheme ? "text-black" : "text-white"}`}>
+            No notes available
+          </p>
         )}
       </div>
 
@@ -235,12 +238,12 @@ function MainPage() {
 
       {/* Edit Note Modal */}
       {isEditingNote && noteToEdit && (
-        <div className="fixed flex inset-0 flex-col items-center gap-[10px] bg-black bg-opacity-50">
-          <div className="flex flex-col items-center mt-[150px] w-[500px] bg-white p-[30px] rounded-[20px]">
-            <h1 className="pb-[20px] text-2xl">Edit Note</h1>
-            <hr className="border-black w-full" />
+        <div className="fixed flex inset-0 flex-col items-center gap-2 bg-black bg-opacity-50 px-4">
+          <div className="flex flex-col items-center mt-[100px] w-full max-w-md bg-white p-6 sm:p-8 rounded-2xl">
+            <h1 className="pb-4 text-xl sm:text-2xl">Edit Note</h1>
+            <hr className="border-black w-full mb-4" />
             <input
-              className="w-full focus:outline-none placeholder-gray-400"
+              className="w-full focus:outline-none placeholder-gray-400 mb-4 px-2 py-2 sm:py-3"
               type="text"
               value={noteToEdit.title}
               onChange={(e) =>
@@ -249,22 +252,22 @@ function MainPage() {
               placeholder="Title"
             />
             <textarea
-              className="w-full focus:outline-none resize-none placeholder-gray-400 px-[0px] pt-[30px] pb-[200px]"
+              className="w-full focus:outline-none resize-none placeholder-gray-400 px-2 py-2 sm:py-3 mb-4"
               value={noteToEdit.content}
               onChange={(e) =>
                 setNoteToEdit({ ...noteToEdit, content: e.target.value })
               }
               placeholder="Content"
             ></textarea>
-            <div className="flex justify-between w-full">
+            <div className="flex justify-between w-full gap-4">
               <button
-                className="bg-[#2563eb] text-white p-[10px] rounded-lg"
+                className="bg-[#2563eb] text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg"
                 onClick={handleSaveEdit}
               >
                 Save
               </button>
               <button
-                className="bg-gray-400 text-white p-[10px] rounded-lg"
+                className="bg-gray-400 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg"
                 onClick={handleCancelEdit}
               >
                 Cancel

@@ -7,7 +7,13 @@ export default {
     "./node_modules/@nextui-org/theme/dist/components/toggle.js"
   ],
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        'xs': '480px', // Extra small screens (e.g., phones)
+        '3xl': '1600px', // Larger screens (e.g., large desktops)
+        // You can add more custom breakpoints as needed
+      },
+    },
   },
   plugins: [nextui()],
 }
