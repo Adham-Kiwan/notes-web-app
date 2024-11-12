@@ -62,7 +62,7 @@ function Login() {
             <h3 className="font-bold text-xl lg:text-2xl">Welcome back</h3>
             <br />
           </div>
-          <div className="flex flex-col lg:flex-row gap-4">
+          <div className="flex flex-col lg:flex-row gap-4 lg:justify-between">
             <div className="cursor-pointer flex gap-[10px] text-white items-center bg-[#1f2937] py-[8px] px-[30px] lg:px-[70px] rounded-lg hover:bg-[#374050] transition duration-100 ease-in-out">
               <img src="/google.svg" className="h-[20px] w-[20px]" alt="" />
               Log in with Google
@@ -152,7 +152,7 @@ function Login() {
         </form>
       </div>
       <div className="flex flex-col justify-center items-center gap-4 lg:gap-[20px] w-full lg:w-[50%] h-[100vh] bg-[#2563eb] p-4 lg:px-[50px] lg:py-[100px]">
-        <div className="flex gap-[10px] justify-center w-full">
+        <div className="flex gap-[10px] w-full">
           <img src="/intro logo.svg" alt="" />
           <h2 className="text-white font-bold text-2xl lg:text-3xl">
             NoteNest

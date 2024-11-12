@@ -361,26 +361,45 @@ app.get('/notes/shared/:id', async (req, res) => {
 });
 
 
-// Endpoint to search notes for the logged-in user
+// Search notes by title or content
 app.get('/notes/search', async (req, res) => {
-  const { userId } = req.user;
-  const { query } = req.query; // Get the search term from query parameters
+  const token = req.headers.authorization?.split(" ")[1]; // Extract token from Authorization header
+  const { query } = req.query; // The search query from the URL
+
+  if (!token) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+
+  if (!query || query.trim() === '') {
+    return res.status(400).json({ error: 'Search query is required' });
+  }
 
   try {
-      const notes = await prisma.note.findMany({
-          where: {
-              userId: userId,
-              OR: [
-                  { title: { contains: query, mode: 'insensitive' } },
-                  { content: { contains: query, mode: 'insensitive' } }
-              ]
-          }
-      });
-      res.json({ success: true, notes });
+    // Verify the JWT token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Search for notes that match the query in either the title or content
+    const notes = await prisma.note.findMany({
+      where: {
+        userId: decoded.userId, // Ensure notes belong to the authenticated user
+        OR: [
+          { title: { contains: query, mode: 'insensitive' } }, // Search by title (case insensitive)
+          { content: { contains: query, mode: 'insensitive' } }, // Search by content (case insensitive)
+        ],
+      },
+    });
+
+    if (notes.length === 0) {
+      return res.status(404).json({ error: 'No notes found matching the query' });
+    }
+
+    res.json({ notes }); // Return matching notes in the response
   } catch (error) {
-      res.status(500).json({ error: error.message });
+    console.error("Error searching notes:", error);
+    res.status(500).json({ error: 'Error searching notes' });
   }
 });
+
 
 
 

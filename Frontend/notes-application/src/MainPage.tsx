@@ -7,6 +7,7 @@ import useStore from "./store";
 import Note from "./Note"; // Assuming you have a Note component
 import ConfirmDelete from "./ConfirmDelete"; // Import the ConfirmDelete component
 import { div } from "framer-motion/client";
+import axios from "axios";
 
 function MainPage() {
   const { isAddNoteVisible, toggleAddNote } = useStore();
@@ -20,6 +21,8 @@ function MainPage() {
   const [isEditingNote, setIsEditingNote] = useState(false); // Track if editing is in progress
   const [noteToEdit, setNoteToEdit] = useState<any>(null); // Store note being edited
   const [isDarkTheme, setIsDarkTheme] = useState(false); // Track theme state
+  const [searchQuery, setSearchQuery] = useState("");
+
 
   useEffect(() => {
     const storedName = localStorage.getItem("name");
@@ -144,6 +147,33 @@ function MainPage() {
     setIsDarkTheme((prevTheme) => !prevTheme);
   };
 
+  const handleSearch = async () => {
+    if (searchQuery.trim() === "") {
+      // Reset to all notes if no search query
+      return handleFetchNotes();
+    }
+
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const response = await axios.get("http://localhost:2000/notes/search", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            query: searchQuery,
+          },
+        });
+
+        if (response.data.notes) {
+          setNotes(response.data.notes);
+        }
+      } catch (error) {
+        console.error("Error searching notes:", error);
+      }
+    }
+  };
+
   return (
     <div
       className={`h-[100vh] lg:py-[70px] lg:px-[150px] xs:py-[20px] xs:px-[20px] flex flex-col gap-[50px] items-center ${
@@ -169,7 +199,15 @@ function MainPage() {
               className="w-full md:w-auto focus:outline-none bg-[#E2E7E8] rounded-[10px] px-[10px] md:px-[40px] py-[8px] md:py-[10px] text-black"
               placeholder="Search..."
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)} // Only update the search query
             />
+            <button
+              className="bg-blue-500 text-white px-[10px] py-[8px] rounded-[10px]"
+              onClick={handleSearch} // Trigger search on button click
+            >
+              Search
+            </button>
           </div>
 
           <div className="flex items-center gap-[10px] md:gap-[20px]">
