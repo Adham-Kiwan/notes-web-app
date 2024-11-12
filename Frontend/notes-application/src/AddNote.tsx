@@ -45,44 +45,45 @@ function AddNote({ onNoteCreated }: AddNoteProps) {
 
   return (
     <div className="fixed inset-0 flex justify-center items-center z-20 bg-black bg-opacity-50">
-      <div className="flex flex-col w-[500px] rounded-[20px] p-[20px] bg-[#ffffff]">
-        <div className="flex justify-between">
-          <input
-            className="placeholder-gray-400 focus:outline-none w-[100%] px-[0px] py-[30px]"
-            type="text"
-            placeholder="Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <div className="flex items-center">
-            <img
-              className="cursor-pointer w-[20px]"
-              src="/cross.png"
-              alt=""
-              onClick={toggleAddNote} // Close modal on cross icon click
-            />
-          </div>
-        </div>
-        <hr className="border-black" />
-        <div className="flex flex-col gap-[10px]">
-          <textarea
-            className="resize-none placeholder-gray-400 focus:outline-none px-[0px] pt-[30px] pb-[200px]"
-            placeholder="Note..."
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
-          <div className="flex justify-end">
-            <button
-              className="px-[20px] py-[13px] rounded-[10px] text-white bg-[#2563EB]"
-              onClick={handleSubmit}
-            >
-              Create
-            </button>
-          </div>
-          {message && <p className="text-red-500 text-sm mt-2">{message}</p>}
-        </div>
+  <div className="flex flex-col w-[90%] sm:w-[500px] rounded-[20px] p-4 sm:p-[20px] bg-white">
+    <div className="flex justify-between items-center">
+      <input
+        className="placeholder-gray-400 focus:outline-none w-full px-2 py-2 sm:px-0 sm:py-6 text-lg sm:text-base"
+        type="text"
+        placeholder="Title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+      <div className="flex items-center ml-2 sm:ml-0">
+        <img
+          className="cursor-pointer w-5 sm:w-[20px]"
+          src="/cross.png"
+          alt="Close"
+          onClick={toggleAddNote} // Close modal on cross icon click
+        />
       </div>
     </div>
+    <hr className="border-gray-300 my-2 sm:my-4" />
+    <div className="flex flex-col gap-3">
+      <textarea
+        className="resize-none placeholder-gray-400 focus:outline-none px-2 py-2 sm:px-0 sm:pt-6 sm:pb-48 text-base sm:text-lg"
+        placeholder="Note..."
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+      />
+      <div className="flex justify-end">
+        <button
+          className="px-4 py-2 sm:px-5 sm:py-3 rounded-md text-white bg-blue-600 text-sm sm:text-base"
+          onClick={handleSubmit}
+        >
+          Create
+        </button>
+      </div>
+      {message && <p className="text-red-500 text-xs sm:text-sm mt-2">{message}</p>}
+    </div>
+  </div>
+</div>
+
   );
 }
 

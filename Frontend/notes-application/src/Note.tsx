@@ -49,37 +49,38 @@ function Note({ note, onDelete, onEdit }: NoteProps) {
 
   return (
     <div className="text-white flex flex-col w-[600px] max-w-full px-[50px] py-[20px] rounded-[15px] bg-[#2563EB] mb-4 sm:px-6 sm:py-4">
-      <div className="flex justify-between">
-        <h3 className="font-semibold text-2xl">{note.title}</h3>
-        <div className="flex items-center gap-[20px]">
-          <img
-            className="cursor-pointer"
-            src="/share.png"
-            alt="Share"
-            onClick={handleShareClick}
-          />
-          <img
-            className="cursor-pointer"
-            src="/edit.png"
-            alt="Edit"
-            onClick={handleEditClick}
-          />
-          <img
-            className="cursor-pointer"
-            src="/trash.png"
-            alt="Delete"
-            onClick={handleDeleteClick}
-          />
-        </div>
-      </div>
-      <hr className="border-[#000000] my-[20px]" />
-      <div>{note.content}</div>
-
-      {/* Display copied message */}
-      {showCopiedMessage && (
-        <div style={copiedMessageStyle}>Link copied to clipboard!</div>
-      )}
+  <div className="flex justify-between items-start">
+    <h3 className="font-semibold text-2xl">{note.title}</h3>
+    <div className="flex gap-5 sm:gap-[20px] sm:flex-row flex-col items-center">
+      <img
+        className="cursor-pointer"
+        src="/share.png"
+        alt="Share"
+        onClick={handleShareClick}
+      />
+      <img
+        className="cursor-pointer"
+        src="/edit.png"
+        alt="Edit"
+        onClick={handleEditClick}
+      />
+      <img
+        className="cursor-pointer"
+        src="/trash.png"
+        alt="Delete"
+        onClick={handleDeleteClick}
+      />
     </div>
+  </div>
+  <hr className="border-[#000000] my-[20px]" />
+  <div>{note.content}</div>
+
+  {/* Display copied message */}
+  {showCopiedMessage && (
+    <div style={copiedMessageStyle}>Link copied to clipboard!</div>
+  )}
+</div>
+
   );
 }
 

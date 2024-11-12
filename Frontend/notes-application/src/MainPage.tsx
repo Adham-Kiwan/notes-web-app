@@ -152,48 +152,49 @@ function MainPage() {
     >
       {/* Header */}
       <div
-        className={`w-[100%] rounded-[20px] ${
-          isAddNoteVisible ? "blur-md opacity-20" : ""
-        } ${isConfirmingDelete ? "blur-md opacity-20" : ""} ${
-          isEditingNote ? "blur-md opacity-20" : ""
-        } ${isDarkTheme ? "bg-[#101927] text-white" : "bg-white"}`}
+  className={`w-full rounded-[20px] ${
+    isAddNoteVisible || isConfirmingDelete || isEditingNote ? "blur-md opacity-20" : ""
+  } ${isDarkTheme ? "bg-[#101927] text-white" : "bg-white"}`}
+>
+  <div className="flex flex-col md:flex-row w-full justify-between p-[20px] md:px-[50px] md:py-[20px] rounded-[20px] items-center gap-4">
+    <div className="flex items-center gap-[10px] md:gap-[20px]">
+      <img src="/avatar.png" alt="" className="w-[40px] h-[40px]" />
+      <h2 className="text-xl md:text-2xl font-bold">{userName}</h2>
+    </div>
+    
+    <div className="flex items-center w-full md:w-auto gap-[10px] md:gap-[20px]">
+      <input
+        className="w-full md:w-auto focus:outline-none bg-[#E2E7E8] rounded-[10px] px-[10px] md:px-[40px] py-[8px] md:py-[10px] text-black"
+        placeholder="Search..."
+        type="text"
+      />
+    </div>
+    
+    <div className="flex items-center gap-[10px] md:gap-[20px]">
+      <Switch
+        size="md"
+        color="success"
+        startContent={<SunIcon />}
+        endContent={<MoonIcon />}
+        checked={isDarkTheme}
+        onChange={handleThemeToggle}
+      />
+      <button
+        className="p-[8px] rounded-[10px] bg-[#2563EB] flex justify-center items-center w-[40px] h-[40px]"
+        onClick={toggleAddNote}
       >
-        <div className="flex w-[100%] justify-between px-[50px] py-[20px] rounded-[20px] items-center">
-          <div className="flex items-center gap-[20px]">
-            <img src="/avatar.png" alt="" />
-            <h2 className="text-2xl font-bold">{userName}</h2>
-          </div>
-          <div className="flex items-center gap-[20px]">
-            <input
-              className="focus:outline-none bg-[#E2E7E8] pr-[200px] rounded-[10px] pl-[40px] py-[10px] text-black"
-              placeholder="Search..."
-              type="text"
-            />
-          </div>
-          <div className="flex items-center gap-[20px]">
-            <Switch
-              size="md"
-              color="success"
-              startContent={<SunIcon />}
-              endContent={<MoonIcon />}
-              checked={isDarkTheme}
-              onChange={handleThemeToggle}
-            />
-            <button
-              className="p-[10px] rounded-[10px] bg-[#2563EB] flex justify-center items-center"
-              onClick={toggleAddNote}
-            >
-              <img src="/plus.png" alt="" />
-            </button>
-            <button
-              className="p-[8px] rounded-[10px] bg-[#ff3737] text-white"
-              onClick={handleLogout}
-            >
-              Log Out
-            </button>
-          </div>
-        </div>
-      </div>
+        <img src="/plus.png" alt="" className="w-[20px] h-[20px]" />
+      </button>
+      <button
+        className="xl:p-[8px] rounded-[10px] bg-[#ff3737] text-white text-sm sm:text-base md:p-[6px]"
+        onClick={handleLogout}
+      >
+        Log Out
+      </button>
+    </div>
+  </div>
+</div>
+
 
       {/* Show AddNote modal if isAddNoteVisible is true */}
       {isAddNoteVisible && <AddNote onNoteCreated={handleFetchNotes} />}
