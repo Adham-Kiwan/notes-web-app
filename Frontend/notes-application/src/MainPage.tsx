@@ -165,7 +165,7 @@ function MainPage() {
           </div>
           <div className="flex items-center gap-[20px]">
             <input
-              className="focus:outline-none bg-[#E2E7E8] pr-[200px] rounded-[10px] pl-[40px] py-[10px]"
+              className="focus:outline-none bg-[#E2E7E8] pr-[200px] rounded-[10px] pl-[40px] py-[10px] text-black"
               placeholder="Search..."
               type="text"
             />
@@ -220,7 +220,7 @@ function MainPage() {
             />
           ))
         ) : (
-          <p>No notes available</p>
+          <p className={`${isDarkTheme ? "text-black" : "text-white"}`}>No notes available</p>
         )}
       </div>
 
@@ -257,13 +257,13 @@ function MainPage() {
             ></textarea>
             <div className="flex justify-between w-full">
               <button
-                className="bg-[#2563EB] p-[10px] rounded-lg"
+                className="bg-[#2563eb] text-white p-[10px] rounded-lg"
                 onClick={handleSaveEdit}
               >
                 Save
               </button>
               <button
-                className="bg-gray-400 p-[10px] rounded-lg"
+                className="bg-gray-400 text-white p-[10px] rounded-lg"
                 onClick={handleCancelEdit}
               >
                 Cancel
