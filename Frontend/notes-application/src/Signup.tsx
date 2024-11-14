@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useStore from "./store";
 
 function Signup() {
@@ -47,10 +47,10 @@ function Signup() {
         setMessage("Sign up successful! Please log in.");
         setIsSuccess(true);
 
-        // Show the success message for 3 seconds before redirecting
+        // Show the success message for 2 seconds before redirecting
         setTimeout(() => {
           setSignedUp(); // Redirect to login page after signup
-        }, 2000); // Redirect after 3 seconds
+        }, 2500); // Redirect after 2 seconds
       } else {
         setMessage(data.error || "Failed to create user");
       }
@@ -60,6 +60,17 @@ function Signup() {
       setIsSubmitting(false); // Reset submitting state
     }
   };
+
+  // Timer to hide error message after a certain time
+  useEffect(() => {
+    if (!message || isSuccess) return;
+
+    const timer = setTimeout(() => {
+      setMessage("");
+    }, 5000); // Error message will disappear after 5 seconds
+
+    return () => clearTimeout(timer); // Clear timeout if component is unmounted or message changes
+  }, [message, isSuccess]);
 
   return (
     <div className="flex flex-col lg:flex-row">
@@ -102,72 +113,54 @@ function Signup() {
           <div className="flex flex-col gap-2">
             <label htmlFor="name">Name</label>
             <input
-              className={`bg-[#374050] rounded-lg px-5 py-2 text-white ${
-                errors.name ? "border-2 border-red-500" : ""
-              }`}
+              className={`bg-[#374050] rounded-lg px-5 py-2 text-white ${errors.name ? "border-2 border-red-500" : ""}`}
               id="name"
               type="text"
               placeholder="Enter your name"
               value={formData.name}
               onChange={handleChange}
             />
-            {errors.name && (
-              <p className="text-red-500 text-sm">{errors.name}</p>
-            )}
+            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
           </div>
           <br />
           <div className="flex flex-col gap-2">
             <label htmlFor="email">Email</label>
             <input
-              className={`bg-[#374050] rounded-lg px-5 py-2 text-white ${
-                errors.email ? "border-2 border-red-500" : ""
-              }`}
+              className={`bg-[#374050] rounded-lg px-5 py-2 text-white ${errors.email ? "border-2 border-red-500" : ""}`}
               id="email"
               type="text"
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
             />
-            {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email}</p>
-            )}
+            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
           <br />
           <div className="flex flex-col gap-2">
             <label htmlFor="password">Password</label>
             <input
-              className={`bg-[#374050] rounded-lg px-5 py-2 text-white ${
-                errors.password ? "border-2 border-red-500" : ""
-              }`}
+              className={`bg-[#374050] rounded-lg px-5 py-2 text-white ${errors.password ? "border-2 border-red-500" : ""}`}
               id="password"
               type="password"
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
             />
-            {errors.password && (
-              <p className="text-red-500 text-sm">{errors.password}</p>
-            )}
+            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
           <br />
           <button
-            className={`w-full rounded-lg py-2 bg-blue-500 ${
-              isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`w-full rounded-lg py-2 bg-blue-500 ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
             type="submit"
-            disabled={isSubmitting} // Disable the button while submitting
+            disabled={isSubmitting}
           >
-            {isSubmitting ? "Signing up..." : "Sign up"}{" "}
-            {/* Button text changes */}
+            {isSubmitting ? "Signing up..." : "Sign up"}
           </button>
           <div>
             <br />
             <p>
               Already a user?{" "}
-              <span
-                className="text-blue-500 cursor-pointer"
-                onClick={togglePage}
-              >
+              <span className="text-blue-500 cursor-pointer" onClick={togglePage}>
                 Log in
               </span>
             </p>
@@ -178,18 +171,13 @@ function Signup() {
       <div className="flex flex-col justify-center items-center gap-4 lg:gap-[20px] w-full lg:w-[50%] h-[100vh] bg-[#2563eb] p-4 lg:px-[50px] lg:py-[100px]">
         <div className="flex gap-[10px] w-full ">
           <img src="/intro logo.svg" alt="" />
-          <h2 className="text-white font-bold text-2xl lg:text-3xl">
-            NoteNest
-          </h2>
+          <h2 className="text-white font-bold text-2xl lg:text-3xl">NoteNest</h2>
         </div>
         <h1 className="text-white font-bold text-3xl lg:text-5xl text-center lg:text-left">
           Your space to capture, organize, and prioritize notes with ease.
         </h1>
         <p className="text-white opacity-80 text-center lg:text-left">
-          Effortlessly capture your thoughts, set priorities, and stay organized
-          all in one place. With NoteNest, manage tasks, ideas, and reminders
-          with simplicity and style. Your notes are always at your fingertips,
-          ready whenever inspiration strikes.
+          Effortlessly capture your thoughts, set priorities, and stay organized all in one place. With NoteNest, manage tasks, ideas, and reminders with simplicity and style. Your notes are always at your fingertips, ready whenever inspiration strikes.
         </p>
         <div className="flex flex-col lg:flex-row lg:w-full items-center w-full gap-[10px]">
           <div className="flex -space-x-2">
@@ -199,16 +187,8 @@ function Signup() {
               "/women/25.jpg",
               "/men/55.jpg",
             ].map((src, idx) => (
-              <a
-                href="#"
-                key={idx}
-                className="z-[0] rounded-full border-2 border-white overflow-hidden w-[45px] h-[45px] bg-[#596376]"
-              >
-                <img
-                  className="w-full h-full"
-                  src={`https://randomuser.me/api/portraits${src}`}
-                  alt=""
-                />
+              <a href="#" key={idx} className="z-[0] rounded-full border-2 border-white overflow-hidden w-[45px] h-[45px] bg-[#596376]">
+                <img className="w-full h-full" src={`https://randomuser.me/api/portraits${src}`} alt="" />
               </a>
             ))}
           </div>
@@ -217,16 +197,12 @@ function Signup() {
         </div>
       </div>
 
-      {/* Show the success message */}
-      {isSuccess && (
-        <div className="h-full fixed w-full flex justify-center items-center text-center bg-[#2563eb] bg-opacity-90 text-2xl text-white py-2">
-          <div>{message}.</div>
-        </div>
-      )}
-      {/* Show the error message */}
-      {message && !isSuccess && (
-        <div className="h-full fixed w-full flex justify-center items-center text-center bg-red-500 bg-opacity-90 text-2xl text-white py-2">
-          {message}.
+      {/* Display the error or success message */}
+      {message && (
+        <div
+          className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-${isSuccess ? "green" : "red"}-500 text-white py-2 px-4 rounded-lg`}
+        >
+          {message}
         </div>
       )}
     </div>
