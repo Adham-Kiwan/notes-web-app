@@ -22,6 +22,8 @@ function MainPage() {
   const [noteToEdit, setNoteToEdit] = useState<any>(null); // Store note being edited
   const [isDarkTheme, setIsDarkTheme] = useState(false); // Track theme state
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
 
 
   useEffect(() => {
@@ -52,6 +54,8 @@ function MainPage() {
         }
       } catch (error) {
         console.error("Error fetching notes:", error);
+      } finally {
+        setIsLoading(false); // Stop loading
       }
     }
   };
@@ -246,6 +250,7 @@ function MainPage() {
           isEditingNote ? "blur-md opacity-20" : ""
         }`}
       >
+        
         {notes.length > 0 ? (
           notes.map((note) => (
             <Note
@@ -312,6 +317,7 @@ function MainPage() {
               </button>
             </div>
           </div>
+
         </div>
       )}
     </div>
