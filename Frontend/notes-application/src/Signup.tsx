@@ -1,4 +1,3 @@
-// Signup.js
 import React, { useState } from "react";
 import useStore from "./store";
 
@@ -12,6 +11,8 @@ function Signup() {
   });
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Track submitting state
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -32,6 +33,7 @@ function Signup() {
     }
 
     setErrors({});
+    setIsSubmitting(true); // Start submitting process
 
     try {
       const response = await fetch("http://localhost:2000/user/create", {
@@ -42,13 +44,20 @@ function Signup() {
 
       const data = await response.json();
       if (response.ok) {
-        setMessage("User created successfully!");
-        setSignedUp(); // Redirect to login page after signup
+        setMessage("Sign up successful! Please log in.");
+        setIsSuccess(true);
+
+        // Show the success message for 3 seconds before redirecting
+        setTimeout(() => {
+          setSignedUp(); // Redirect to login page after signup
+        }, 2000); // Redirect after 3 seconds
       } else {
         setMessage(data.error || "Failed to create user");
       }
     } catch (error) {
       setMessage("Error creating user. Please try again.");
+    } finally {
+      setIsSubmitting(false); // Reset submitting state
     }
   };
 
@@ -66,8 +75,8 @@ function Signup() {
             <br />
           </div>
           <div className="flex flex-col lg:flex-row gap-4 lg:justify-between">
-          <div className="cursor-pointer flex gap-[10px] text-white items-center bg-[#1f2937] py-[8px] px-[30px] lg:px-[70px] rounded-lg hover:bg-[#374050] transition duration-100 ease-in-out">
-          <img
+            <div className="cursor-pointer flex gap-[10px] text-white items-center bg-[#1f2937] py-[8px] px-[30px] lg:px-[70px] rounded-lg hover:bg-[#374050] transition duration-100 ease-in-out">
+              <img
                 src="/google.svg"
                 className="h-[20px] w-[20px]"
                 alt="Google icon"
@@ -141,8 +150,15 @@ function Signup() {
             )}
           </div>
           <br />
-          <button className="w-full rounded-lg py-2 bg-blue-500" type="submit">
-            Sign up
+          <button
+            className={`w-full rounded-lg py-2 bg-blue-500 ${
+              isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            type="submit"
+            disabled={isSubmitting} // Disable the button while submitting
+          >
+            {isSubmitting ? "Signing up..." : "Sign up"}{" "}
+            {/* Button text changes */}
           </button>
           <div>
             <br />
@@ -186,7 +202,7 @@ function Signup() {
               <a
                 href="#"
                 key={idx}
-                className="z-[5] rounded-full border-2 border-white overflow-hidden w-[45px] h-[45px] bg-[#596376]"
+                className="z-[0] rounded-full border-2 border-white overflow-hidden w-[45px] h-[45px] bg-[#596376]"
               >
                 <img
                   className="w-full h-full"
@@ -200,6 +216,19 @@ function Signup() {
           <h4 className="text-white opacity-80">Over 15.7K Happy Users</h4>
         </div>
       </div>
+
+      {/* Show the success message */}
+      {isSuccess && (
+        <div className="h-full fixed w-full flex justify-center items-center text-center bg-[#2563eb] bg-opacity-90 text-2xl text-white py-2">
+          <div>{message}.</div>
+        </div>
+      )}
+      {/* Show the error message */}
+      {message && !isSuccess && (
+        <div className="h-full fixed w-full flex justify-center items-center text-center bg-red-500 bg-opacity-90 text-2xl text-white py-2">
+          {message}.
+        </div>
+      )}
     </div>
   );
 }

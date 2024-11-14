@@ -10,6 +10,7 @@ function Login() {
   });
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // New state to track loading status
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -29,6 +30,7 @@ function Login() {
     }
 
     setErrors({});
+    setIsLoading(true); // Set loading to true when starting the request
 
     try {
       const response = await fetch("http://localhost:2000/user/login", {
@@ -48,6 +50,8 @@ function Login() {
       }
     } catch (error) {
       setMessage("Error logging in. Please try again.");
+    } finally {
+      setIsLoading(false); // Set loading to false after the request is done
     }
   };
 
@@ -131,8 +135,9 @@ function Login() {
           <button
             className="w-full rounded-lg py-[8px] bg-blue-500"
             type="submit"
+            disabled={isLoading} // Disable the button while loading
           >
-            Log in
+            {isLoading ? "Logging in..." : "Log in"}
           </button>
           {message && (
             <p className="text-red-500 text-sm mt-2">Invalid credentials!</p>
