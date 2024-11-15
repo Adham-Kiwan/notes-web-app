@@ -197,16 +197,52 @@ function Signup() {
         </div>
       </div>
 
-      {/* Display the error or success message */}
-      {message && (
-        <div
-          className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-${isSuccess ? "green" : "red"}-500 text-white py-2 px-4 rounded-lg`}
-        >
-          {message}
+       {/* Show the success message */}
+       {isSuccess && (
+        <div style={copiedSuccessMessageStyle}>
+        {message}
+      </div>
+      )}
+      {/* Show the error message */}
+      {message && !isSuccess && (
+        <div style={copiedFailMessageStyle}>
+          {message}.
         </div>
       )}
     </div>
   );
 }
+
+
+const copiedSuccessMessageStyle = {
+  position: "absolute",
+  bottom: "10px",
+  left: "50%",
+  transform: "translateX(-50%)",
+  padding: "8px 16px",
+  backgroundColor: "#1fff31",
+  color: "#000000",
+  borderRadius: "8px",
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+  zIndex: 1000,
+  textAlign: "center",
+  fontSize: "14px",
+};
+
+const copiedFailMessageStyle = {
+  position: "absolute",
+  bottom: "10px",
+  left: "50%",
+  transform: "translateX(-50%)",
+  padding: "8px 16px",
+  backgroundColor: "#ff0000",
+  color: "#000000",
+  borderRadius: "8px",
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+  zIndex: 1000,
+  textAlign: "center",
+  fontSize: "14px",
+};
+
 
 export default Signup;

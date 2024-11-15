@@ -6,7 +6,6 @@ import AddNote from "./AddNote";
 import useStore from "./store";
 import Note from "./Note"; // Assuming you have a Note component
 import ConfirmDelete from "./ConfirmDelete"; // Import the ConfirmDelete component
-import { div } from "framer-motion/client";
 import axios from "axios";
 
 function MainPage() {
